@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "fiistore",
+  "version": "0.1.0",
+  "description": "A application for management store & e-store",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "fiicode",
+    "email": "bahaboubackr@gmail.com",
+    "url": "https://github.com/fiicode/erb"
   },
   "main": "./dist/main/main.js",
   "scripts": {
