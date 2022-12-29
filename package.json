@@ -1,5 +1,5 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "description": "fiistore.io",
   "keywords": [
     "electron",
     "boilerplate",
@@ -11,27 +11,20 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/fiicode/erb#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/fiicode/erb/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/fiicode/erb.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "fiistore",
+    "email": "dev@fiistore.io",
+    "url": "http://fiistore.io"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -46,7 +39,9 @@
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
-    "test": "jest"
+    "test": "jest",
+    "release": "electron-builder -m -w --x64 --arm64 -p 'onTagOrDraft'",
+    "win-cert": "electron-builder create-self-signed-cert -p fiistore"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -185,8 +180,9 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "fiistore.io",
+    "appId": "com.fiicode.fiistore",
+    "copyright": "Copyright fiipanel",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -204,6 +200,7 @@
         ]
       },
       "type": "distribution",
+      "category": "public.app-category.productivity",
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
@@ -224,6 +221,10 @@
       ]
     },
     "win": {
+      "certificateFile": "private/fiistore.pfx",
+      "certificatePassword": "",
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "fiistore.io",
       "target": [
         "nsis"
       ]
@@ -232,7 +233,7 @@
       "target": [
         "AppImage"
       ],
-      "category": "Development"
+      "category": "utility"
     },
     "directories": {
       "app": "release/app",
@@ -244,8 +245,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "fiicode",
+      "repo": "erb"
     }
   },
   "collective": {

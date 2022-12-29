@@ -9,17 +9,62 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, screen, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 class AppUpdater {
-  constructor() {
+  constructor(mainWindow: BrowserWindow) {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.autoDownload = false;
+    // autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
+
+    autoUpdater.on('update-available', () => {
+      return dialog
+        .showMessageBox({
+          type: 'info',
+          title: 'Mise à jour disponible',
+          message:
+            'Une nouvelle version est disponible. Voulez-vous mettre à jour maintenant ?',
+          buttons: ['Mettre à jour', 'Non'],
+        })
+        .then((result) => {
+          const buttonIndex = result.response;
+          // eslint-disable-next-line promise/always-return
+          if (buttonIndex === 0) {
+            autoUpdater.downloadUpdate();
+          }
+        });
+    });
+
+    autoUpdater.on('update-downloaded', async () => {
+      // setImmediate(() => {
+      //   app.removeAllListeners("window-all-closed")
+      //   if (focusedWindow != null) {
+      //     focusedWindow.close()
+      //   }
+      //   autoUpdater.quitAndInstall(false)
+      // })
+      return dialog
+        .showMessageBox({
+          type: 'info',
+          title: 'La mise à jour est prête',
+          message: 'Installer',
+          buttons: ['Oui', 'Plus tard'],
+        })
+        .then((result) => {
+          const buttonIndex = result.response;
+          // eslint-disable-next-line promise/always-return
+          if (buttonIndex === 0) {
+            // autoUpdater.quitAndInstall(true, true);
+            autoUpdater.quitAndInstall();
+          }
+        });
+    });
   }
 }
 
@@ -69,10 +114,15 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  const screenElectron = screen.getPrimaryDisplay();
+  const dimensions = screenElectron.size;
+
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: dimensions.width,
+    height: dimensions.height,
+    minWidth: dimensions.width / 1.5,
+    minHeight: dimensions.height / 1.5,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -109,7 +159,7 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
+  new AppUpdater(mainWindow);
 };
 
 /**
