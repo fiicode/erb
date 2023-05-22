@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const { notarize } = require('electron-notarize');
+=======
+const { notarize } = require('@electron/notarize');
+>>>>>>> upstream/main
 const { build } = require('../../package.json');
 
 exports.default = async function notarizeMacos(context) {

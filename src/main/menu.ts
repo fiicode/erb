@@ -57,7 +57,11 @@ export default class MenuBuilder {
       label: 'Electron',
       submenu: [
         {
+<<<<<<< HEAD
           label: 'fiistore.io',
+=======
+          label: 'About ElectronReact',
+>>>>>>> upstream/main
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
