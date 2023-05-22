@@ -9,18 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-<<<<<<< HEAD
 import { app, BrowserWindow, shell, ipcMain, screen, dialog } from 'electron';
-=======
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
->>>>>>> upstream/main
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 class AppUpdater {
-<<<<<<< HEAD
   constructor(mainWindow: BrowserWindow) {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
@@ -70,12 +65,6 @@ class AppUpdater {
           }
         });
     });
-=======
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
->>>>>>> upstream/main
   }
 }
 
@@ -125,7 +114,6 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
-<<<<<<< HEAD
   const screenElectron = screen.getPrimaryDisplay();
   const dimensions = screenElectron.size;
 
@@ -135,12 +123,6 @@ const createWindow = async () => {
     height: dimensions.height,
     minWidth: dimensions.width / 1.5,
     minHeight: dimensions.height / 1.5,
-=======
-  mainWindow = new BrowserWindow({
-    show: false,
-    width: 1024,
-    height: 728,
->>>>>>> upstream/main
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -177,11 +159,7 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-<<<<<<< HEAD
   new AppUpdater(mainWindow);
-=======
-  new AppUpdater();
->>>>>>> upstream/main
 };
 
 /**
