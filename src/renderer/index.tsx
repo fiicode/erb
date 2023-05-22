@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
-<<<<<<< HEAD
-const container = document.getElementById('root')!;
-=======
+// <<<<<<< HEAD
+// const container = document.getElementById('root')!;
+// =======
 const container = document.getElementById('root') as HTMLElement;
->>>>>>> upstream/main
+// >>>>>>> upstream/main
 const root = createRoot(container);
 root.render(<App />);
 

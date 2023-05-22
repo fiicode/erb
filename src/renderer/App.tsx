@@ -1,10 +1,10 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-<<<<<<< HEAD
-import './App.css';
-import Login from './Auth/Login';
-import Dashboard from './Dashboard';
-import Home from './Home';
-=======
+// <<<<<<< HEAD
+// import './App.css';
+// import Login from './Auth/Login';
+// import Dashboard from './Dashboard';
+// import Home from './Home';
+// =======
 import icon from '../../assets/icon.svg';
 import './App.css';
 
@@ -44,19 +44,19 @@ function Hello() {
     </div>
   );
 }
->>>>>>> upstream/main
+// >>>>>>> upstream/main
 
 export default function App() {
   return (
     <Router>
       <Routes>
-<<<<<<< HEAD
+{/* <<<<<<< HEAD
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-=======
+======= */}
         <Route path="/" element={<Hello />} />
->>>>>>> upstream/main
+{/* >>>>>>> upstream/main */}
       </Routes>
     </Router>
   );
