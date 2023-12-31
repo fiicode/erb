@@ -65,11 +65,7 @@ const configuration: webpack.Configuration = {
     }),
 
     new webpack.DefinePlugin({
-<<<<<<< HEAD
-      'process.type': '"main"',
-=======
       'process.type': '"browser"',
->>>>>>> upstream/main
     }),
   ],
 

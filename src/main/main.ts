@@ -1,13 +1,3 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, screen, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -19,51 +9,19 @@ class AppUpdater {
   constructor(mainWindow: BrowserWindow) {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.autoDownload = false;
-    // autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.autoDownload = true;
     autoUpdater.checkForUpdates();
 
     autoUpdater.on('update-available', () => {
-      return dialog
-        .showMessageBox({
-          type: 'info',
-          title: 'Mise à jour disponible',
-          message:
-            'Une nouvelle version est disponible. Voulez-vous mettre à jour maintenant ?',
-          buttons: ['Mettre à jour', 'Non'],
-        })
-        .then((result) => {
-          const buttonIndex = result.response;
-          // eslint-disable-next-line promise/always-return
-          if (buttonIndex === 0) {
-            autoUpdater.downloadUpdate();
-          }
-        });
+      autoUpdater.downloadUpdate();
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      mainWindow.webContents.send('update-download-progress', progressObj.percent);
     });
 
     autoUpdater.on('update-downloaded', async () => {
-      // setImmediate(() => {
-      //   app.removeAllListeners("window-all-closed")
-      //   if (focusedWindow != null) {
-      //     focusedWindow.close()
-      //   }
-      //   autoUpdater.quitAndInstall(false)
-      // })
-      return dialog
-        .showMessageBox({
-          type: 'info',
-          title: 'La mise à jour est prête',
-          message: 'Installer',
-          buttons: ['Oui', 'Plus tard'],
-        })
-        .then((result) => {
-          const buttonIndex = result.response;
-          // eslint-disable-next-line promise/always-return
-          if (buttonIndex === 0) {
-            // autoUpdater.quitAndInstall(true, true);
-            autoUpdater.quitAndInstall();
-          }
-        });
+      autoUpdater.quitAndInstall();
     });
   }
 }
@@ -119,10 +77,12 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: dimensions.width,
-    height: dimensions.height,
-    minWidth: dimensions.width / 1.5,
-    minHeight: dimensions.height / 1.5,
+    width: 650,
+    height: 350,
+    minWidth: 650,
+    minHeight: 350,
+    maxHeight: 350,
+    maxWidth: 650,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -156,19 +116,9 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
   new AppUpdater(mainWindow);
 };
-
-/**
- * Add event listeners...
- */
-
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -179,8 +129,6 @@ app
   .then(() => {
     createWindow();
     app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
   })

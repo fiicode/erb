@@ -1,7 +1,7 @@
 {
   "name": "fiistore",
-  "version": "0.1.1",
-  "description": "A application for management store & e-store",
+  "version": "0.0.1",
+  "description": "fiistore.io is an enterprise store management application.",
   "license": "MIT",
   "author": {
     "name": "fiicode",
