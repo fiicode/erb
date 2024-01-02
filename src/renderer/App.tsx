@@ -9,7 +9,14 @@ function Hello() {
 
   useEffect(() => {
     const updateDownloadProgress = (args: UpdateDownloadProgressArgs) => {
-      setProgress(args.percent);
+      const value = args.percent;
+      // console.log(args, value, progress)
+      setProgress((prevProgress) => {
+        if (value > prevProgress) {
+          return value;
+        }
+        return prevProgress;
+      });
     };
 
     const ipcRenderer = window.electron.ipcRenderer;
@@ -29,13 +36,19 @@ function Hello() {
           <img width="100" alt="icon" src={icon} />
         </div>
         <h2>fiistore.io</h2>
-        <div className="meter">
-          <span style={{ width: `${progress}%` }}></span>
-        </div>
-        <small>Veuillez patienter pendant le téléchargement de la dernière version </small>
-        <footer style={{ position: 'absolute', bottom: 0, textAlign: 'center', paddingBottom: '10px', marginLeft: '105px' }}>
-          <span>Copyright© 2015 - {new Date().getFullYear()}™</span>
-        </footer>
+        {progress === 0 ? (
+          <span className="loader" />
+        ) : (
+          <>
+            <div className="meter">
+              <span style={{ width: `${progress}%` }}></span>
+            </div>
+            <small>Veuillez patienter pendant le téléchargement de la dernière version </small>
+            <footer style={{ position: 'absolute', bottom: 0, textAlign: 'center', paddingBottom: '10px', marginLeft: '105px' }}>
+              <span>Copyright© 2015 - {new Date().getFullYear()}™</span>
+            </footer>
+          </>
+        )}
       </div>
     </>
   );

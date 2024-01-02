@@ -16,12 +16,16 @@ class AppUpdater {
       autoUpdater.downloadUpdate();
     });
 
-    autoUpdater.on('download-progress', (progressObj) => {
-      mainWindow.webContents.send('update-download-progress', progressObj.percent);
-    });
-
     autoUpdater.on('update-downloaded', async () => {
       autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      // const value = (progressObj.transferred * 100) / progressObj.total / 100;
+      const value = Math.round(progressObj.percent);
+      mainWindow.setProgressBar(value);
+      mainWindow.webContents.send('update-download-progress', { percent: value });
+      // mainWindow.webContents.send('update-download-progress', progressObj.percent);
     });
   }
 }
@@ -119,9 +123,7 @@ const createWindow = async () => {
   new AppUpdater(mainWindow);
 };
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app
@@ -133,3 +135,9 @@ app
     });
   })
   .catch(console.log);
+
+// app.on('before-quit', () => {
+//   if (mainWindow) {
+//     mainWindow.destroy();
+//   }
+// }); 18882000
