@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-import { ElectronHandler } from '../main/preload';
-=======
-import { Channels, UpdateDownloadProgressArgs } from 'main/preload';
->>>>>>> main
+// <<<<<<< HEAD
+// import { ElectronHandler } from '../main/preload';
+// =======
+import { Channels, UpdateDownloadProgressArgs } from '../main/preload';
 
 declare global {
   interface Window {
