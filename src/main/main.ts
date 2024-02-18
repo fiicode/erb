@@ -1,25 +1,32 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, screen, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 class AppUpdater {
-  constructor() {
+  constructor(mainWindow: BrowserWindow) {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.autoDownload = true;
+    autoUpdater.checkForUpdates();
+
+    autoUpdater.on('update-available', () => {
+      autoUpdater.downloadUpdate();
+    });
+
+    autoUpdater.on('update-downloaded', async () => {
+      autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      // const value = (progressObj.transferred * 100) / progressObj.total / 100;
+      const value = Math.round(progressObj.percent);
+      mainWindow.setProgressBar(value);
+      mainWindow.webContents.send('update-download-progress', { percent: value });
+      // mainWindow.webContents.send('update-download-progress', progressObj.percent);
+    });
   }
 }
 
@@ -69,10 +76,17 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  const screenElectron = screen.getPrimaryDisplay();
+  const dimensions = screenElectron.size;
+
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 650,
+    height: 350,
+    minWidth: 650,
+    minHeight: 350,
+    maxHeight: 350,
+    maxWidth: 650,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -106,22 +120,10 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
+  new AppUpdater(mainWindow);
 };
-
-/**
- * Add event listeners...
- */
-
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app
@@ -129,9 +131,13 @@ app
   .then(() => {
     createWindow();
     app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
   })
   .catch(console.log);
+
+// app.on('before-quit', () => {
+//   if (mainWindow) {
+//     mainWindow.destroy();
+//   }
+// }); 18882000

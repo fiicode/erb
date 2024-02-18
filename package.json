@@ -1,5 +1,6 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "name": "fiistore.io",
+  "description": "fiistore.io",
   "keywords": [
     "electron",
     "boilerplate",
@@ -11,27 +12,20 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/fiicode/erb#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/fiicode/erb/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/fiicode/erb.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "fiistore",
+    "email": "dev@fiistore.io",
+    "url": "https://fiistore.io"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -40,12 +34,34 @@
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
+<<<<<<< HEAD
     "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never && npm run build:dll",
+=======
+    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder -m -w --x64 --arm64 --publish never",
+    "prepare": "husky install",
+>>>>>>> main
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
+    "test": "jest",
+    "release": "electron-builder -m -w --x64 --arm64 -p 'onTagOrDraft'",
+    "win-cert": "electron-builder create-self-signed-cert -p fiistore"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=development eslint --cache"
+    ],
+    "*.json,.{eslintrc,prettierrc}": [
+      "prettier --ignore-path .eslintignore --parser json --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ],
+    "*.{html,md,yml}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ],
     "test": "jest"
   },
   "browserslist": [],
@@ -171,8 +187,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "fiistore.io",
+    "appId": "com.fiicode.fiistore",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -190,6 +206,7 @@
         ]
       },
       "type": "distribution",
+      "category": "public.app-category.productivity",
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
@@ -210,6 +227,10 @@
       ]
     },
     "win": {
+      "certificateFile": "private/fiistore.pfx",
+      "certificatePassword": "",
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "fiistore.io",
       "target": [
         "nsis"
       ]
@@ -218,7 +239,7 @@
       "target": [
         "AppImage"
       ],
-      "category": "Development"
+      "category": "utility"
     },
     "directories": {
       "app": "release/app",
@@ -230,8 +251,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "fiicode",
+      "repo": "erb"
     }
   },
   "collective": {

@@ -1,45 +1,59 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import icon from '../../assets/icon.png';
 import './App.css';
+import { useEffect, useState } from 'react';
+import { UpdateDownloadProgressArgs } from '../main/preload';
 
 
 function Hello() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const updateDownloadProgress = (args: UpdateDownloadProgressArgs) => {
+      const value = args.percent;
+      // console.log(args, value, progress)
+      setProgress((prevProgress) => {
+        if (value > prevProgress) {
+          return value;
+        }
+        return prevProgress;
+      });
+    };
+
+    const ipcRenderer = window.electron.ipcRenderer;
+    const unsubscribe = ipcRenderer.listen('update-download-progress', updateDownloadProgress);
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
+    <>
+      <div style={{ textAlign: 'center' }}>
+        <div className="Hello">
+          <img width="100" alt="icon" src={icon} />
+        </div>
+        <h2>fiistore.io</h2>
+        {progress === 0 ? (
+          <span className="loader" />
+        ) : (
+          <>
+            <div className="meter">
+              <span style={{ width: `${progress}%` }}></span>
+            </div>
+            <small>Veuillez patienter pendant le téléchargement de la dernière version </small>
+            <footer style={{ position: 'absolute', bottom: 0, textAlign: 'center', paddingBottom: '10px', marginLeft: '105px' }}>
+              <span>Copyright© 2015 - {new Date().getFullYear()}™</span>
+            </footer>
+          </>
+        )}
       </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
+    </>
   );
 }
-
 export default function App() {
   return (
     <Router>
