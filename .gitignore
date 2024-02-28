@@ -14,7 +14,11 @@ coverage
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
-private/
+private/fiistore.p12
+private/fiistore.pfx
+private/GH_TOKEN.txt
+
+package.json
 
 # OSX
 .DS_Store
